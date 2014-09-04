@@ -1,0 +1,30 @@
+{
+	"name": "gracenode-socket",
+	"description": "TCP socket server module for gracenode framework.",
+	"version": "0.0.1",
+	"author": "Nobuyori Takahashi <voltrue2@yahoo.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/voltrue2/gracenode-socket.git"
+	},
+	"dependencies": {
+		"node-uuid": "1.4.1"
+	},
+	"devDependencies": {
+		"mocha": "1.18.2"
+	},
+	"engine": "node >= 0.10.20",
+	"contributors": [],
+	"keywords": [
+		"gracenode",
+		"framework",
+		"web",
+		"routing",
+		"www",
+		"module",
+		"server",
+		"socket",
+		"tcp"
+	],
+	"license": "MIT"
+}

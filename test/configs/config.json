@@ -1,0 +1,17 @@
+{
+	"modules": {
+		"log": {
+			"console": true,
+			"color": true,
+			"level": ">= verbose"
+		},
+		"gracenode-socket": {
+			"host": "127.0.0.1",
+			"port": 6000,
+			"controllerPath": "gracenode-socket/test/controller/",
+			"reroute": [
+				{ "from": "/", "to": "/test/index" }
+			]
+		}
+	}
+}

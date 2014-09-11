@@ -2,6 +2,14 @@
 
 TCP socket server for gracenode framework.
 
+## To DO
+
+#### Implement TLS for safe communication
+
+#### Complete the documentation
+
+***
+
 ## How to include it in your project
 
 To add this package as your gracenode module, add the following to your package.json:

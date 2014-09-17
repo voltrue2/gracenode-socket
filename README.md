@@ -2,12 +2,6 @@
 
 TCP socket server for gracenode framework.
 
-## To DO
-
-#### Implement TLS for safe communication
-
-#### Complete the documentation
-
 ***
 
 ## How to include it in your project
@@ -41,6 +35,11 @@ gracenode.socket
 ```
 "modules": {
     "gracenode-socket": {
+	"tls": <boolean>,
+	"key": <path to the key file for TLS>,
+	"cert": <path to the cert file for TLS>,
+	"requestCert": <boolean>,
+	"ca": <an array of client certificate files>,
         "host": <IP address or host name>,
         "port": <port number>,
         "controllerPath": </path/to/your/controller/directory/>,
@@ -50,6 +49,36 @@ gracenode.socket
     }
 }
 ```
+
+### tls
+
+If true, the server will be using TLS for encrypted communication.
+
+The default value is `false`.
+
+### key
+
+A string value of the path to the key file for TLS.
+
+If `tls` is `false`, this value is not required.
+
+### cert
+
+A string value of the path to the cert file for TLS.
+
+If `tls` is `false`, this value is not required.
+
+### requestCert
+
+A boolean value if the client is using certificate authenticateion.
+
+The default value is `false`.
+
+### ca
+
+An array of certificate files for the client that uses a self-signed certificate.
+
+If the client(s) does not use self-signed  certificate, this value is not required.
 
 ### host
 

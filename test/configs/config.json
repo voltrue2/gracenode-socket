@@ -6,6 +6,11 @@
 			"level": ">= verbose"
 		},
 		"gracenode-socket": {
+			"tls": false,
+			"key": "gracenode-socket/test/pem/key.pem",
+			"cert": "gracenode-socket/test/pem/cert.pem",
+			"requestCert": false,
+			"ca": null,
 			"host": "127.0.0.1",
 			"port": 6000,
 			"controllerPath": "gracenode-socket/test/controller/",

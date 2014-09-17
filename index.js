@@ -5,6 +5,7 @@ var router = require('./lib/router');
 var controller = require('./lib/controller');
 var reqHook = require('./hooks/request');
 var resHook = require('./hooks/response');
+var async = require('async');
 
 module.exports.readConfig = function (config) {
 	if (!config) {
@@ -16,7 +17,10 @@ module.exports.readConfig = function (config) {
 };
 
 module.exports.setup = function (cb) {
-	router.setup(cb);
+	async.series([
+		router.setup,
+		server.setup
+	], cb);
 };
 
 module.exports.addRequestHook = function (hooks) {

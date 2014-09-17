@@ -102,3 +102,58 @@ Example:
 
 If it is given `{ "from": "/reroute/me", "to": "/i/am/rerouted" }`, The pocket that contains `"/reroute/me/"` as the `endPoint`
 will execute the controller method of `"/i/am/rerouted"` instead.
+
+## Data Format
+
+`gracenode-socket` module's server expects the client the send the data in a certain format.
+
+The data **MUST** be a stringified JSON.
+
+The structure of the JSON needs to be as show below:
+
+```
+{
+	"endPoint": <string a value representing what controller and method to execte>,
+	"data": <object a groupd of data sent from the client for the server>
+}
+```
+
+## EndPoint
+
+The `endPoint` in the JSON data sent from the client acts very similar to URI of HTTP/HTTPS.
+
+It tells the server what `controller` and what `method` to execte.
+
+Example:
+
+If the server recieves the following data:
+
+```
+{
+	"endPoint": "/example/one",
+	"data": { test: true }
+}
+```
+
+The `controller` that will be executed is `example` and the method will be `one`.
+
+The gracenode-socket module expects the controller (mostly a directory) called `example` to be available under the `controllerPath`
+
+For the `endPoint` example above, the script to be executed would be:
+
+`/your/controller/path/example/one.js`
+
+## Controller
+
+The controller method script will have 2 arguments passed from the `gracenode-server` every time the server receives data from the client.
+
+The script would look like the below:
+
+```
+exports = function (reqest, response) {
+	// access the data sent from the client
+	var someData = request.data('someData');
+	// if the server needs to send some data back to the client
+	response.respond(someResponse);
+};
+```

@@ -25,7 +25,8 @@ function execHook(hookList, req, request, response, cb) {
 		count += 1;
 		hook(request, function (error, status) {
 			if (error) {
-				logger.error('response hook #' + count + ' executed with an error (endPoint:' + endPoint + '):', '(connection-id:' + req.id + ')', '(status: ' + status + ')');
+				status = status || 400;
+				logger.error('response hook #' + count + ' executed with an error (endPoint:' + endPoint + '):', '(connection-id:' + req.id + ')', '(status:' + status + ')');
 				return response.error(error.message, error.message, status);	
 			}
 			logger.verbose('response hook #' + count + ' successfully executed (endPoint:' + endPoint + ')', '(connection-id:' + req.id + ')');

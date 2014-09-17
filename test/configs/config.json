@@ -15,7 +15,8 @@
 			"port": 6000,
 			"controllerPath": "gracenode-socket/test/controller/",
 			"reroute": [
-				{ "from": "/", "to": "/test/index" }
+				{ "from": "/", "to": "/test/index" },
+				{ "from": "/reroute/from", "to": "/reroute/to" }
 			]
 		}
 	}

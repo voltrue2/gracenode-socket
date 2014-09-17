@@ -24,9 +24,10 @@ function execHook(hookList, req, request, response, methodFunc) {
 	logger.verbose('request hook found for (endPoint:' + endPoint + ')');
 	async.eachSeries(hookList, function (hook, next) {
 		hook(request, function (error, status) {
+			status = status || 400;
 			count += 1;
 			if (error) {
-				logger.error('request hook #' + count + ' executed with an error (endPoint:' + endPoint + '):', '(connection-id:' + req.id + ')', '(status: ' + status + ')');
+				logger.error('request hook #' + count + ' executed with an error (endPoint:' + endPoint + '):', '(connection-id:' + req.id + ')', '(status:' + status + ')');
 				return response.error(error.message, error.message, status);
 			}
 			logger.verbose('request hook #' + count + ' successfully executed (endPoint:' + endPoint + ')', '(connection-id:' + req.id + ')');

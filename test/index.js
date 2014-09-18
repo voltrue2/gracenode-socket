@@ -1,6 +1,6 @@
 var prefix = require('./prefix');
 var gn = require('gracenode');
-var client = require('./client');
+var Client = require('./client');
 var assert = require('assert');
 var clientSocket = null;
 
@@ -61,10 +61,10 @@ describe('gracenode-socket', function () {
 	});
 
 	it('Can send packet to the endPoint "/test/"', function (done) {
-		client.setup(function (error, sock) {
+		client = new Client();
+		client.setup(function (error) {
 			assert.equal(error, null);
-			clientSocket = sock;
-			client.send(clientSocket, '/test/', { test: '#1' }, function (error, res) {
+			client.send('/test/', { test: '#1' }, function (error, res) {
 				assert.equal(error, null);
 				assert.equal(res.data.test, true);
 				assert.equal(res.status, 200);
@@ -77,7 +77,7 @@ describe('gracenode-socket', function () {
 		client.setup(function (error, sock) {
 			assert.equal(error, null);
 			clientSocket = sock;
-			client.send(clientSocket, '/', { test: '#1' }, function (error, res) {
+			client.send('/', { test: '#1' }, function (error, res) {
 				assert.equal(error, null);
 				assert.equal(res.data.test, true);
 				assert.equal(res.status, 200);
@@ -87,7 +87,7 @@ describe('gracenode-socket', function () {
 	});
 
 	it('Can reroute to another controller method', function (done) {
-		client.send(clientSocket, '/reroute/from', { test: 'test' }, function (error, res) {
+		client.send('/reroute/from', { test: 'test' }, function (error, res) {
 			assert.equal(error, null);
 			assert.equal(res.data, 'test');
 			done();
@@ -95,7 +95,7 @@ describe('gracenode-socket', function () {
 	});
 
 	it('Can fail request hook "/test/fail" with status 403', function (done) {
-		client.send(clientSocket, '/test/fail', null, function (error, res) {
+		client.send('/test/fail', null, function (error, res) {
 			assert.equal(res.data.code, 'requestHookFailed');
 			assert.equal(res.status, 403);
 			done();
@@ -103,10 +103,25 @@ describe('gracenode-socket', function () {
 	});
 
 	it('Can fail response hook "/test/resFail" with status 400', function (done) {
-		client.send(clientSocket, '/test/resFail', null, function (error, res) {
+		client.send('/test/resFail', null, function (error, res) {
 			assert.equal(res.data.code, 'responseHookFailed');
 			assert.equal(res.status, 400);
 			done();
+		});
+	});
+
+	it('Can push data from the server to a client', function (done) {
+		client.send('/test/push', null, function (error, res) {
+			assert.equal(error, null);
+			assert.equal(res.status, 200);
+			
+			client.once(function (error, res) {
+				if (res.data === 'push') {
+					assert.equal(error, null);
+					assert.equal(res.status, 200);
+					done();
+				}
+			});
 		});
 	});
 });

@@ -1,40 +1,46 @@
 var net = require('net');
 var host = '127.0.0.1';
 var port = 6000;
-var callbacks = [];
 
-exports.setup = function (cb) {
+function Client() {
+	this.callbacks = [];
+	this.client;
+}
 
-	var client = new net.Socket();
+Client.prototype.setup = function (cb) {
 
-	client.on('data', function (data) {
-		callback(null, data);
+	this.client = new net.Socket();
+	var that =  this;
+
+	this.client.on('data', function (data) {
+		that.callback(null, data);
 	});
 
-	client.on('close', function () {
-		callback(new Error('closed'), null);
+	this.client.on('close', function () {
+		that.callback(new Error('closed'), null);
 	});
 
-	client.on('error', function (data) {
-		callback(data, null);
+	this.client.on('error', function (data) {
+		that.callback(data, null);
 	});
-	client.connect(port, host, function () {
-		var call = function () {
-			cb(null, client);
-		};
-		call();
-	});
+	this.client.connect(port, host, cb);
 
 };
 
-exports.send = function (client, endPoint, data, cb) {
-	callbacks.push(cb);
-	client.write(JSON.stringify({ endPoint: endPoint, data: { time: Date.now(), input: data || null } }));
+Client.prototype.once = function (cb) {
+	this.callbacks.push(cb);
 };
 
-function callback(error, res) {
-	while (callbacks.length) {
-		var cb = callbacks.shift();
+Client.prototype.send = function (endPoint, data, cb) {
+	this.callbacks.push(cb);
+	this.client.write(JSON.stringify({ endPoint: endPoint, data: { time: Date.now(), input: data || null } }));
+};
+
+Client.prototype.callback = function (error, res) {
+	if (this.callbacks.length) {
+		var cb = this.callbacks.shift();
 		cb(error, res !== null ? JSON.parse(res.toString()) : null);
 	}
-}
+};
+
+module.exports = Client;

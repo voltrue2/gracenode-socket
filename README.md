@@ -22,13 +22,15 @@ var gracenode = require('gracenode');
 // this tells gracenode to load the module
 gracenode.use('gracenode-socket');
 ```
-A
+
 To access the module:
 
 ```
 // the prefix gracenode- will be removed automatically
 gracenode.socket
 ```
+
+***
 
 ## Configurations
 
@@ -103,6 +105,66 @@ Example:
 If it is given `{ "from": "/reroute/me", "to": "/i/am/rerouted" }`, The pocket that contains `"/reroute/me/"` as the `endPoint`
 will execute the controller method of `"/i/am/rerouted"` instead.
 
+***
+
+## Methods
+
+###.start()
+
+Starts the socket server.
+
+###.getConnectionsByIds(idList [array])
+
+Returns an array of client connections to be used to push data from the server to other clients.
+
+The returned connections are instances of `Response` object.
+
+###.addRequestHooks(hooks [object])
+
+Adds hook functions to be executed on specified `controller` and `method`.
+
+The hooks will be exeuted **BEFORE** the controller.
+
+Example:
+
+```
+gracenode.addRequestHooks({
+    foo: { 
+            boo: fooBooHook
+        }
+});
+```
+
+The above example will execute a hook called `fooBooHook` when the server receives `/foo/boo` as the `endPoint`.
+
+To add multiple hooks:
+
+```
+gracenode.addRequestHooks({
+    foo: {
+        boo: [
+            fooBooHook,
+            fooBooHook2
+        ]
+    }
+});
+```
+
+***
+
+## Starting Socket Server
+
+In your bootstrap code add:
+
+```
+gracenode.setup(function () {
+    // gracenode is ready
+    gracenode.socket.start();
+});
+```
+
+***
+
 ## Data Format
 
 `gracenode-socket` module's server expects the client the send the data in a certain format.
@@ -117,6 +179,8 @@ The structure of the JSON needs to be as show below:
 	"data": <object a groupd of data sent from the client for the server>
 }
 ```
+
+***
 
 ## EndPoint
 
@@ -143,6 +207,8 @@ For the `endPoint` example above, the script to be executed would be:
 
 `/your/controller/path/example/one.js`
 
+***
+
 ## Controller
 
 The controller method script will have 2 arguments passed from the `gracenode-server` every time the server receives data from the client.
@@ -157,3 +223,81 @@ exports = function (reqest, response) {
 	response.respond(someResponse);
 };
 ```
+
+***
+
+## Request Object
+
+A request object is passed to all controller method when the server receives the data from the client.
+
+###.getConnectionId()
+
+Returns a unique ID for this socket connection.
+
+This is ID can be used to push data from the server to other clients.
+
+###.data(dataName [string])
+
+Returns the data sent from the client.
+
+Example:
+
+The data from the client:
+
+```
+{
+    "foo": 1234
+}
+```
+
+How to read the data on the server:
+
+```
+var foo = request.data('foo');
+// 1234
+```
+
+###.set(keyName [string], value [mixed])
+
+Sets the given value by `keyName` to be read by `.get()`.
+
+###.get(keyName [string])
+
+Reads the value set by the given `keyName`.
+
+The value **MUST** be set by `.set()` before executing `.get()`.
+
+***
+
+## Response Object
+
+A response object is passed to all controller method when the server receives the data from the client.
+
+The server does **NOT** need to respond to the client like it would with `HTTP/HTTPS` protocols.
+
+###.respond(data [mixed], status [int])
+
+Sends the data to the client in `JSON` format.
+
+The second argument `status` is optional. The `status` imitates the `HTTP` status code for easy use.
+
+Default value of `status` is `200`.
+
+###.error(code [string], message [string], status [int])
+
+Sends a response to the client as an error. The data sent to the client is in `JSON` format.
+
+The structure of the `JSON` would be:
+
+```
+{
+    "code": "errorCode",
+    "message": "errorMessage"
+}
+```
+
+The optional argument `status` is an integer and imitates `HTTP` status code.
+
+Default value of `status` is `400`.
+
+***

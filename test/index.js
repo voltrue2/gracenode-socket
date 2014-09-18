@@ -124,4 +124,36 @@ describe('gracenode-socket', function () {
 			});
 		});
 	});
+
+	it('Can push to more than one client in one go', function (done) {
+		var counter = 0;
+		var check = function () {
+			if (counter === 2) {
+				done();
+			}
+		};
+		var client2 = new Client();
+		// send and register
+		client.send('/test/push2', null);
+		// set up the second client
+		client2.setup(function (error) {
+			assert.equal(error, null);
+			client.once(function (error, res) {
+				if (res.data === 'push') {
+					assert.equal(error, null);
+					counter++;
+					check();
+				}
+			});
+			client2.once(function (error, res) {
+				if (res.data === 'push') {
+					assert.equal(error, null);
+					counter++;
+					check();
+				}
+			});
+			// send and register
+			client2.send('/test/push2', null);
+		});
+	});
 });

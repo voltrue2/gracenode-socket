@@ -32,7 +32,9 @@ Client.prototype.once = function (cb) {
 };
 
 Client.prototype.send = function (endPoint, data, cb) {
-	this.callbacks.push(cb);
+	if (typeof cb === 'function') {
+		this.callbacks.push(cb);
+	}
 	this.client.write(JSON.stringify({ endPoint: endPoint, data: { time: Date.now(), input: data || null } }));
 };
 

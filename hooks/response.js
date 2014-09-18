@@ -10,6 +10,10 @@ module.exports.addHooks = function (hooks) {
 };
 
 module.exports.exec = function (response, cb) {
+	if (!response._parsed) {
+		// if there is no request object, we don't even bother applying hooks
+		return cb();
+	}
 	var hook = hookMapper.find(hookMapList, response._parsed.request);
 	if (hook) {
 		return execHook(hook, response._parsed.request, response._request, response, cb);

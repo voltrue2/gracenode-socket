@@ -36,3 +36,7 @@ module.exports.addResponseHook = function (hooks) {
 module.exports.start = function () {
 	server.start();
 };
+
+module.exports.getConnectionsByIds = function (idList) {
+	return server.getConnectionsByIds(idList);
+};

@@ -2,7 +2,6 @@ var prefix = require('./prefix');
 var gn = require('gracenode');
 var Client = require('./client');
 var assert = require('assert');
-var clientSocket = null;
 
 describe('gracenode-socket', function () {
 
@@ -74,9 +73,8 @@ describe('gracenode-socket', function () {
 	});
 
 	it('Can send packet to the endPoint "/" and rerouted to "/test/"', function (done) {
-		client.setup(function (error, sock) {
+		client.setup(function (error) {
 			assert.equal(error, null);
-			clientSocket = sock;
 			client.send('/', { test: '#1' }, function (error, res) {
 				assert.equal(error, null);
 				assert.equal(res.data.test, true);
@@ -154,6 +152,15 @@ describe('gracenode-socket', function () {
 			});
 			// send and register
 			client2.send('/test/push2', null);
+		});
+	});
+	
+	it('Can respond with an error to the client', function (done) {
+		client.send('/test/error400', null, function (error, res) {
+			assert.equal(error, null);
+			assert.equal(res.data.code, 'testError400');
+			assert.equal(res.status, 400);
+			done();
 		});
 	});
 });

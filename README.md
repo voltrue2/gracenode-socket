@@ -119,13 +119,25 @@ Returns an array of client connections to be used to push data from the server t
 
 The returned connections are instances of `Response` object.
 
+#### Example: 
+
+The code below will push data from the server to multiple clients
+
+```
+var clients = getConnectionsByIds(connectionIdList);
+
+for (var i = 0, len = clients.length; i < len; i++) {
+    clients[i].respond(dataFromTheServer, 200);
+}
+```
+
 ###.addRequestHooks(hooks [object])
 
 Adds hook functions to be executed on specified `controller` and `method`.
 
 The hooks will be exeuted **BEFORE** the controller.
 
-Example:
+#### Example:
 
 ```
 gracenode.addRequestHooks({
@@ -149,6 +161,30 @@ gracenode.addRequestHooks({
     }
 });
 ```
+
+#### How to assign request hook(s) to all methods of a controller
+
+```
+gracenode.addRequestHooks({
+    foo: fooBooHook
+});
+```
+
+The above example assigns a request hook function called `fooBooHook` to all methods of controller `foo`.
+
+#### How to assign request hook(s) too all controller and their methods
+
+```
+gracenode.addRequestHooks(fooBooHook);
+```
+
+The above code assigns a request hook function called `fooBooHook` to all controller and their methods.
+
+###.addResponseHook(hooks [object])
+
+Adds hook functions to be executed on specified `controller` and `method` on every server response to the client.
+
+The basic behavior of this function is the same as `addRequestHooks()`.
 
 ***
 

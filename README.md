@@ -58,6 +58,8 @@ If true, the server will be using TLS for encrypted communication.
 
 The default value is `false`.
 
+**NOTE**: The implementation of TLS in node.js is not exactly stable.
+
 ### key
 
 A string value of the path to the key file for TLS.

@@ -17,16 +17,13 @@ int main(int argc, char**argv) {
 	struct sockaddr_in cliaddr;
 
 	// check for the input arguments
-	if (argc != 4) {
-		printf("usage:  client <IP address> <port number> <data string>\n");
+	if (argc != 3) {
+		printf("usage:  client <IP address> <port number>\n");
 		return 1;
 	}
 
 	// cast port number
 	sscanf(argv[2], "%d", &port);
-
-	// copy string
-	strcpy(data, argv[3]);
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -37,16 +34,16 @@ int main(int argc, char**argv) {
 
 	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
-	// send data
-	sendto(sockfd, data, strlen(data), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-
-	fputs(data, stdout);
-
-	// get response
-	n = recvfrom(sockfd, response, 10000, 0, NULL, NULL);
-	response[n] = 0;
-	// output response
-	fputs(strcat(response, "\n"), stdout);	
+	// keyboard input to send data
+	while (fgets(data, 10000, stdin) != NULL) {
+		// send data
+		sendto(sockfd, data, strlen(data), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+		// recieve data
+		n = recvfrom(sockfd, response, 10000, 0, NULL, NULL);
+		response[n] = 0;
+		// output
+		fputs(strcat(response, "\n"), stdout);
+        }
 	
 	return 0;
 }
